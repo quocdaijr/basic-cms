@@ -1,0 +1,3 @@
+[submodule "packages/yii2-audit"]
+	path = packages/yii2-audit
+	url = https://github.com/quocdaijr/yii2-audit

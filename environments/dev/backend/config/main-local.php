@@ -19,6 +19,15 @@ if (!YII_ENV_TEST) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+//        'allowedIPs' => ['*'],
+        'generators' => [
+            'module' => [
+                'class' => '\common\gii\module\Generator',
+                'templates' => [
+                    'advanced' => '@common/gii/module/templates/advanced',
+                ]
+            ]
+        ],
     ];
 }
 

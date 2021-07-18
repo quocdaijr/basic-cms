@@ -2,37 +2,107 @@ version: '3.2'
 
 services:
 
-  frontend:
-    build: frontend
-    ports:
-      - 20080:80
+  basic_nginx:
+    image: nginx:latest
+    container_name: basic_nginx
+    expose:
+      - 80
+      - 81
+      - 443
     volumes:
-      # Re-use local composer cache via host-volume
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      # Mount source-code for development
-      - ./:/app
+      - ./:/var/www/html/yii2-basic-cms
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/logs:/var/log/nginx
+    depends_on:
+      - basic_php74
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    network_mode: "host"
 
-  backend:
-    build: backend
-    ports:
-      - 21080:80
+  basic_php74:
+    build: docker/php74/php-fpm
+    container_name: basic_php74
+    working_dir: /var/www/html/yii2-basic-cms
+    expose:
+      - 9000
     volumes:
-      # Re-use local composer cache via host-volume
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      # Mount source-code for development
-      - ./:/app
+      - ./:/var/www/html/yii2-basic-cms
+      - ./docker/php74/supervisor/logs:/var/log/cache
+      - ./docker/php74/php-fpm/config/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    network_mode: "host"
 
-  mysql:
-    image: mysql:5.7
+  basic_rabbitmq:
+    build: docker/rabbitmq
+    container_name: basic_rabbitmq
+    volumes:
+      - ./docker/rabbitmq/logs:/var/log/rabbitmq/log
     environment:
-      - MYSQL_ROOT_PASSWORD=verysecret
-      - MYSQL_DATABASE=yii2advanced
-      - MYSQL_USER=yii2advanced
-      - MYSQL_PASSWORD=secret
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: 12345@
+    expose:
+      - 15672
+      - 5672
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    network_mode: "host"
 
-  #pgsql:
-  #  image: postgres:9.5
-  #  environment:
-  #    - POSTGRES_DB=yii2advanced
-  #    - POSTGRES_USER=yii2advanced
-  #    - POSTGRES_PASSWORD=secret
+  basic_percona8:
+    build: docker/percona8
+    container_name: basic_percona8
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345@
+      - MYSQL_DATABASE=base_db
+      - MYSQL_USER=base_user
+      - MYSQL_PASSWORD=base_pass
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    expose:
+      - 3306
+    volumes:
+      - ./docker/percona8/data:/var/lib/mysql
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    network_mode: "host"
+
+  basic_elasticsearch7:
+    build: docker/elasticsearch7
+    container_name: basic_elasticsearch7
+    volumes:
+      - ./docker/elasticsearch7/data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+#      - ELASTICSEARCH_HEAP_SIZE=1g
+    expose:
+      - 9200
+      - 9300
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    network_mode: "host"
+
+  basic_redis:
+    image: redis:latest
+    container_name: basic_redis
+    volumes:
+      - ./docker/redis/data:/data
+    expose:
+      - "6379"
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    network_mode: "host"
+
+  basic_memcached:
+    image: memcached:latest
+    container_name: basic_memcached
+    expose:
+      - 11211
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    network_mode: "host"

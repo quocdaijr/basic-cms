@@ -1,0 +1,26 @@
+{
+  "name": "quocdaijr/elasticsearch",
+  "description": "Packages elasticsearch",
+  "type": "package",
+  "keywords": [
+    "yii2",
+    "quocdaijr",
+    "elasticsearch"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "quocdaijr",
+      "email": "quocdaijr@gmail.com"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "~2.0.0",
+    "elasticsearch/elasticsearch": "^7.12"
+  },
+  "autoload": {
+    "psr-4": {
+      "Elasticsearch\\": "src"
+    }
+  }
+}

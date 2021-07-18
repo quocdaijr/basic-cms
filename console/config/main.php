@@ -14,14 +14,39 @@ return [
     'controllerNamespace' => 'console\controllers',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'controllerMap' => [
         'fixture' => [
             'class' => 'yii\console\controllers\FixtureController',
             'namespace' => 'common\fixtures',
-          ],
+        ],
+        'migrate' => [
+            'class' => yii\console\controllers\MigrateController::class,
+            'migrationPath' =>[
+                '@common/migrations/db',
+                '@backend/modules/category/migrations'
+            ],
+            'migrationTable' => '{{%system_db_migration}}'
+        ],
+        'admin-migrate' => [
+            'class' => yii\console\controllers\MigrateController::class,
+            'migrationPath' => '@admin/migrations',
+        ],
+        'rbac-migrate' => [
+            'class' => yii\console\controllers\MigrateController::class,
+            'migrationPath' => '@common/migrations/rbac/',
+            'migrationTable' => '{{%system_rbac_migration}}',
+        ],
+        'audit-migrate' => [
+            'class' => yii\console\controllers\MigrateController::class,
+            'db' => 'db_audit',
+            'migrationNamespaces' => [
+                'bedezign\yii2\audit\migrations',
+            ],
+        ],
     ],
+    'modules' => [],
     'components' => [
         'log' => [
             'targets' => [

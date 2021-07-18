@@ -2,7 +2,9 @@
 
 namespace backend\controllers;
 
+use common\components\services\TestService;
 use common\models\LoginForm;
+use Elasticsearch\Elasticsearch;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -28,7 +30,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'test'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -72,14 +74,14 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
+        if (!z()->user->isGuest) {
             return $this->goHome();
         }
 
         $this->layout = 'blank';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(q()->post()) && $model->login()) {
             return $this->goBack();
         }
 
@@ -97,7 +99,7 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        z()->user->logout();
 
         return $this->goHome();
     }
