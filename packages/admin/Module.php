@@ -2,6 +2,7 @@
 
 namespace admin;
 
+use admin\components\Configs;
 use Yii;
 use yii\helpers\Inflector;
 
@@ -41,16 +42,11 @@ class Module extends \yii\base\Module
     /**
      * @inheritdoc
      */
-    public $defaultRoute = 'assignment';
+    public $defaultRoute = 'user';
     /**
      * @var array Nav bar items.
      */
     public $navbar;
-    /**
-     * @var string Main layout using for module. Default to layout of parent module.
-     * Its used when `layout` set to 'left-menu', 'right-menu' or 'top-menu'.
-     */
-    public $mainLayout = '@admin/views/layouts/main.php';
     /**
      * @var array
      * @see [[menus]]
@@ -91,8 +87,8 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-        if (!isset(Yii::$app->i18n->translations['rbac-admin'])) {
-            Yii::$app->i18n->translations['rbac-admin'] = [
+        if (!isset(Yii::$app->i18n->translations['admin'])) {
+            Yii::$app->i18n->translations['admin'] = [
                 'class' => 'yii\i18n\PhpMessageSource',
                 'sourceLanguage' => 'en',
                 'basePath' => '@admin/messages',
@@ -102,8 +98,8 @@ class Module extends \yii\base\Module
         //user did not define the Navbar?
         if ($this->navbar === null && Yii::$app instanceof \yii\web\Application) {
             $this->navbar = [
-                ['label' => Yii::t('rbac-admin', 'Help'), 'url' => ['default/index']],
-                ['label' => Yii::t('rbac-admin', 'Application'), 'url' => Yii::$app->homeUrl],
+                ['label' => Yii::t('admin', 'Help'), 'url' => ['default/index']],
+                ['label' => Yii::t('admin', 'Application'), 'url' => Yii::$app->homeUrl],
             ];
         }
         if (class_exists('yii\jui\JuiAsset')) {
@@ -130,11 +126,11 @@ class Module extends \yii\base\Module
             ];
             foreach ($this->_coreItems as $id => $lable) {
                 if (!isset($conditions[$id]) || $conditions[$id]) {
-                    $this->_normalizeMenus[$id] = ['label' => Yii::t('rbac-admin', $lable), 'url' => [$mid . $id]];
+                    $this->_normalizeMenus[$id] = ['label' => Yii::t('admin', $lable), 'url' => [$mid . $id]];
                 }
             }
             foreach (array_keys($this->controllerMap) as $id) {
-                $this->_normalizeMenus[$id] = ['label' => Yii::t('rbac-admin', Inflector::humanize($id)), 'url' => [$mid . $id]];
+                $this->_normalizeMenus[$id] = ['label' => Yii::t('admin', Inflector::humanize($id)), 'url' => [$mid . $id]];
             }
 
             // user configure menus
@@ -172,13 +168,13 @@ class Module extends \yii\base\Module
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            /* @var $action \yii\base\Action */
-            $view = $action->controller->getView();
-
-            $view->params['breadcrumbs'][] = [
-                'label' => ($this->defaultUrlLabel ?: Yii::t('rbac-admin', 'Admin')),
-                'url' => ['/' . ($this->defaultUrl ?: $this->uniqueId)],
-            ];
+//            /* @var $action \yii\base\Action */
+//            $view = $action->controller->getView();
+//
+//            $view->params['breadcrumbs'][] = [
+//                'label' => ($this->defaultUrlLabel ?: Yii::t('admin', 'Admin')),
+//                'url' => ['/' . ($this->defaultUrl ?: $this->uniqueId)],
+//            ];
             return true;
         }
         return false;

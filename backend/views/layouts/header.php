@@ -1,3 +1,7 @@
+<?php
+use yii\bootstrap4\Html;
+?>
+
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
@@ -82,7 +86,7 @@
                 <img src="<?=z()->user->identity['avatar'] ?? '/images/anonymous.jpg'?>" class="user-image img-circle elevation-2" alt="User Image">
                 <span class="d-none d-md-inline"><?php echo z()->user->identity['username'] ?></span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <ul class="dropdown-menu dropdown-menu-xl dropdown-menu-right">
                 <!-- User image -->
                 <li class="user-header bg-primary">
                     <img src="<?=z()->user->identity['avatar'] ?? '/images/anonymous.jpg'?>" class="img-circle elevation-2" alt="User Image">
@@ -108,9 +112,10 @@
                     <!-- /.row -->
                 </li>
                 <!-- Menu Footer-->
-                <li class="user-footer">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                    <a href="#" class="btn btn-default btn-flat float-right">Sign out</a>
+                <li class="user-footer btn-group">
+                    <?php echo Html::a(Yii::t('backend', 'Profile'), ['/admin/account/update'], ['class' => 'btn btn-default btn-flat'])?>
+                    <?php echo Html::a(Yii::t('backend', 'Change Password'), ['/admin/account/change-password'], ['class' => 'btn btn-default btn-flat'])?>
+                    <?php echo Html::a(Yii::t('backend', 'Sign out'), ['/admin/sign-in/logout'], ['class' => 'btn btn-default btn-flat float-right', 'data-method' => 'post'])?>
                 </li>
             </ul>
         </li>

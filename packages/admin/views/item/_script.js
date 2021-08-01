@@ -69,7 +69,7 @@ function search(target) {
 function listUsers() {
     var $list = $('#list-users');
     var users = _opts.users.users.map(function (user) {
-        return `<span class="label label-info"><a href="${user.link}">${user.username}</a></span>`;
+        return `<span class="label label-info"><a href="${user.link}">--${user.username}--</a></span>`;
     });
     users.push('<br>');
     if (_opts.users.prev) {

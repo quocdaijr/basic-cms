@@ -1,11 +1,7 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
-    'supportEmail' => 'support@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
-    'user.passwordResetTokenExpire' => 3600,
-    'user.passwordMinLength' => 8,
+    'adminEmail' => ENV_ADMIN_EMAIL,
+    'supportEmail' => ENV_SUPPORT_EMAIL,
     'availableLocales'  => [
         'en-US' => 'English (US)',
         'ru-RU' => 'Русский (РФ)',
@@ -15,4 +11,5 @@ return [
         'zh-CN' => '简体中文',
         'pl-PL' => 'Polski (PL)',
     ],
+    'bsVersion' => '4.x', // bootstrap version
 ];

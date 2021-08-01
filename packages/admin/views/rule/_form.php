@@ -9,19 +9,22 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="auth-item-form">
+    <div class="card">
+        <div class="card-body">
+            <?php $form = ActiveForm::begin(); ?>
 
-    <?php $form = ActiveForm::begin(); ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => 64]) ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 64]) ?>
+            <?= $form->field($model, 'className')->textInput() ?>
 
-    <?= $form->field($model, 'className')->textInput() ?>
+            <div class="form-group">
+                <?php
+                echo Html::submitButton($model->isNewRecord ? Yii::t('admin', 'Create') : Yii::t('admin', 'Update'), [
+                    'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'])
+                ?>
+            </div>
 
-    <div class="form-group">
-        <?php
-        echo Html::submitButton($model->isNewRecord ? Yii::t('rbac-admin', 'Create') : Yii::t('rbac-admin', 'Update'), [
-            'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'])
-        ?>
+            <?php ActiveForm::end(); ?>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
 </div>

@@ -22,6 +22,7 @@ class Yii extends \yii\BaseYii
  * @property yii\web\UrlManager $urlManagerStorage UrlManager for storage application.
  * @property trntv\glide\components\Glide $glide
  * @property trntv\bus\CommandBus $commandBus
+ * @property \yii\swiftmailer\Mailer $adminMailer
  */
 abstract class BaseApplication extends yii\base\Application
 {

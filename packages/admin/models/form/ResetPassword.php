@@ -5,7 +5,7 @@ namespace admin\models\form;
 use admin\components\UserStatus;
 use admin\models\User;
 use Yii;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 
@@ -24,25 +24,24 @@ class ResetPassword extends Model
     /**
      * Creates a form model given a token.
      *
-     * @param  string $token
-     * @param  array $config name-value pairs that will be used to initialize the object properties
-     * @throws InvalidParamException if token is empty or not valid
+     * @param string $token
+     * @param array $config name-value pairs that will be used to initialize the object properties
+     * @throws InvalidArgumentException if token is empty or not valid
      */
     public function __construct($token, $config = [])
     {
         if (empty($token) || !is_string($token)) {
-            throw new InvalidParamException('Password reset token cannot be blank.');
+            throw new InvalidArgumentException('Password reset token cannot be blank.');
         }
-        // check token
-        $class = Yii::$app->getUser()->identityClass ?: 'admin\models\User';
+//         check token
         if (static::isPasswordResetTokenValid($token)) {
-            $this->_user = $class::findOne([
-                    'password_reset_token' => $token,
-                    'status' => UserStatus::ACTIVE
+            $this->_user = User::findOne([
+                'password_reset_token' => $token,
+                'status' => UserStatus::ACTIVE
             ]);
         }
         if (!$this->_user) {
-            throw new InvalidParamException('Wrong password reset token.');
+            throw new InvalidArgumentException('Wrong password reset token.');
         }
         parent::__construct($config);
     }
@@ -86,7 +85,7 @@ class ResetPassword extends Model
         }
         $expire = ArrayHelper::getValue(Yii::$app->params, 'user.passwordResetTokenExpire', 24 * 3600);
         $parts = explode('_', $token);
-        $timestamp = (int) end($parts);
+        $timestamp = (int)end($parts);
         return $timestamp + $expire >= time();
     }
 }

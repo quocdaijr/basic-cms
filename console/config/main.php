@@ -12,10 +12,6 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'console\controllers',
-    'aliases' => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm' => '@vendor/npm-asset',
-    ],
     'controllerMap' => [
         'fixture' => [
             'class' => 'yii\console\controllers\FixtureController',
@@ -32,6 +28,10 @@ return [
         'admin-migrate' => [
             'class' => yii\console\controllers\MigrateController::class,
             'migrationPath' => '@admin/migrations',
+        ],
+        'key-storage-migrate' => [
+            'class' => yii\console\controllers\MigrateController::class,
+            'migrationPath' => '@keystorage/migrations',
         ],
         'rbac-migrate' => [
             'class' => yii\console\controllers\MigrateController::class,

@@ -8,50 +8,43 @@ use admin\components\Helper;
 /* @var $model admin\models\User */
 
 $this->title = $model->username;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('rbac-admin', 'Users'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('admin', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controllerId = $this->context->uniqueId . '/';
 ?>
 <div class="user-view">
+    <div class="card">
+        <div class="card-header">
+            <h3><?= Html::encode($this->title) ?></h3>
+        </div>
+        <div class="card-body">
+            <p>
+                <?php
+                if (Helper::checkRoute($controllerId . 'delete')) {
+                    echo Html::a(Yii::t('admin', 'Delete'), ['delete', 'id' => $model->id], [
+                        'class' => 'btn btn-danger',
+                        'data' => [
+                            'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                            'method' => 'post',
+                        ],
+                    ]);
+                }
+                ?>
+            </p>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?php
-        if ($model->status == 0 && Helper::checkRoute($controllerId . 'activate')) {
-            echo Html::a(Yii::t('rbac-admin', 'Activate'), ['activate', 'id' => $model->id], [
-                'class' => 'btn btn-primary',
-                'data' => [
-                    'confirm' => Yii::t('rbac-admin', 'Are you sure you want to activate this user?'),
-                    'method' => 'post',
+            <?=
+            DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    'username',
+                    'email:email',
+                    'created_at:date',
+                    'status',
                 ],
-            ]);
-        }
-        ?>
-        <?php
-        if (Helper::checkRoute($controllerId . 'delete')) {
-            echo Html::a(Yii::t('rbac-admin', 'Delete'), ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
-                'data' => [
-                    'confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                    'method' => 'post',
-                ],
-            ]);
-        }
-        ?>
-    </p>
-
-    <?=
-    DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'username',
-            'email:email',
-            'created_at:date',
-            'status',
-        ],
-    ])
-    ?>
+            ])
+            ?>
+        </div>
+    </div>
 
 </div>

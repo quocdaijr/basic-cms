@@ -2,34 +2,42 @@
 
 namespace admin\models;
 
+use admin\behaviors\DateTimeBehavior;
 use admin\components\Configs;
-use admin\components\UserStatus;
+use admin\constants\Constant;
 use Yii;
 use yii\base\NotSupportedException;
-use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
+use function Ramsey\Uuid\v4;
 
 /**
  * User model
  *
  * @property integer $id
+ * @property string $uuid
  * @property string $username
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $email
+ * @property string $phone
  * @property string $auth_key
  * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
+ * @property string $logged_at
+ * @property string $created_at
+ * @property string $updated_at
  * @property string $password write-only password
  *
- * @property UserProfile $profile
+ * @property Profile $profile
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_INACTIVE = 0;
-    const STATUS_ACTIVE = 10;
+    public static function getDb()
+    {
+        return Configs::userDb();
+    }
 
     /**
      * @inheritdoc
@@ -45,7 +53,23 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            DateTimeBehavior::class,
+            'uuid' => [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'uuid'
+                ],
+                'value' => function () {
+                    return v4();
+                }
+            ],
+            'auth_key' => [
+                'class' => AttributeBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'auth_key'
+                ],
+                'value' => Yii::$app->getSecurity()->generateRandomString()
+            ],
         ];
     }
 
@@ -55,8 +79,18 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'in', 'range' => [UserStatus::ACTIVE, UserStatus::INACTIVE]],
+            [['username', 'email'], 'unique'],
+            [['username', 'email', 'uuid'], 'unique'],
+            [['email'], 'email'],
+            [['username'], 'filter', 'filter' => '\yii\helpers\Html::encode'],
+            ['status', 'default', 'value' => Constant::STATUS_USER_INACTIVE],
+            ['status', 'in', 'range' => array_keys(Constant::statuses())],
         ];
+    }
+
+    public function getProfile()
+    {
+        return $this->hasOne(Profile::class, ['user_id' => 'id']);
     }
 
     /**
@@ -64,7 +98,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => UserStatus::ACTIVE]);
+        return static::findOne(['id' => $id, 'status' => Constant::STATUS_USER_ACTIVE]);
     }
 
     /**
@@ -73,17 +107,6 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
-    }
-
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        return static::findOne(['username' => $username, 'status' => UserStatus::ACTIVE]);
     }
 
     /**
@@ -99,8 +122,8 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         return static::findOne([
-                'password_reset_token' => $token,
-                'status' => UserStatus::ACTIVE,
+            'password_reset_token' => $token,
+            'status' => Constant::STATUS_USER_ACTIVE,
         ]);
     }
 
@@ -117,7 +140,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         $parts = explode('_', $token);
-        $timestamp = (int) end($parts);
+        $timestamp = (int)end($parts);
         return $timestamp + $expire >= time();
     }
 
@@ -190,8 +213,15 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public static function getDb()
-    {
-        return Configs::userDb();
+    public static function findByUsernameOrEmail($value){
+        return static::find()->where([
+            'or',
+            ['username' => $value],
+            ['email' => $value]
+        ])->andWhere(['status' => Constant::STATUS_USER_ACTIVE])->one();
+    }
+
+    public static function findWithProfile($id) {
+        return self::find()->with('profile')->where(['id' => $id])->one();
     }
 }

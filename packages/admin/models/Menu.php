@@ -92,13 +92,13 @@ class Menu extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('rbac-admin', 'ID'),
-            'name' => Yii::t('rbac-admin', 'Name'),
-            'parent' => Yii::t('rbac-admin', 'Parent'),
-            'parent_name' => Yii::t('rbac-admin', 'Parent Name'),
-            'route' => Yii::t('rbac-admin', 'Route'),
-            'order' => Yii::t('rbac-admin', 'Order'),
-            'data' => Yii::t('rbac-admin', 'Data'),
+            'id' => Yii::t('admin', 'ID'),
+            'name' => Yii::t('admin', 'Name'),
+            'parent' => Yii::t('admin', 'Parent'),
+            'parent_name' => Yii::t('admin', 'Parent Name'),
+            'route' => Yii::t('admin', 'Route'),
+            'order' => Yii::t('admin', 'Order'),
+            'data' => Yii::t('admin', 'Data'),
         ];
     }
 

@@ -5,25 +5,42 @@ namespace admin\models\searchs;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use admin\models\User as UserDb;
 
 /**
  * User represents the model behind the search form about `admin\models\User`.
  */
 class User extends Model
 {
+    /**
+     * @var
+     */
     public $id;
+    /**
+     * @var
+     */
     public $username;
+    /**
+     * @var
+     */
+    public $phone;
+    /**
+     * @var
+     */
     public $email;
+    /**
+     * @var
+     */
     public $status;
-    
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'status',], 'integer'],
-            [['username', 'email'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['username', 'email', 'phone'], 'safe'],
         ];
     }
 
@@ -36,9 +53,7 @@ class User extends Model
      */
     public function search($params)
     {
-        /* @var $query \yii\db\ActiveQuery */
-        $class = Yii::$app->getUser()->identityClass ? : 'admin\models\User';
-        $query = $class::find();
+        $query = UserDb::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -56,7 +71,8 @@ class User extends Model
         ]);
 
         $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'phone', $this->phone]);
 
         return $dataProvider;
     }

@@ -4,7 +4,7 @@ $config = [
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '',
+            'cookieValidationKey' => ENV_COOKIE_VALIDATION_KEY,
         ],
     ],
 ];
@@ -19,7 +19,7 @@ if (!YII_ENV_TEST) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-//        'allowedIPs' => ['*'],
+        'allowedIPs' => ['*'],
         'generators' => [
             'module' => [
                 'class' => '\common\gii\module\Generator',

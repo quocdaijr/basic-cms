@@ -72,12 +72,12 @@ class BizRule extends \yii\base\Model
     public function classExists()
     {
         if (!class_exists($this->className)) {
-            $message = Yii::t('rbac-admin', "Unknown class '{class}'", ['class' => $this->className]);
+            $message = Yii::t('admin', "Unknown class '{class}'", ['class' => $this->className]);
             $this->addError('className', $message);
             return;
         }
         if (!is_subclass_of($this->className, Rule::className())) {
-            $message = Yii::t('rbac-admin', "'{class}' must extend from 'yii\rbac\Rule' or its child class", [
+            $message = Yii::t('admin', "'{class}' must extend from 'yii\rbac\Rule' or its child class", [
                     'class' => $this->className]);
             $this->addError('className', $message);
         }
@@ -89,8 +89,8 @@ class BizRule extends \yii\base\Model
     public function attributeLabels()
     {
         return [
-            'name' => Yii::t('rbac-admin', 'Name'),
-            'className' => Yii::t('rbac-admin', 'Class Name'),
+            'name' => Yii::t('admin', 'Name'),
+            'className' => Yii::t('admin', 'Class Name'),
         ];
     }
 

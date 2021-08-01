@@ -3,12 +3,12 @@
 use yii\bootstrap4\NavBar;
 use yii\bootstrap4\Nav;
 use yii\helpers\Html;
+use admin\assets\AdminAsset;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-list(,$url) = Yii::$app->assetManager->publish('@admin/assets');
-$this->registerCssFile($url.'/main.css');
+AdminAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

@@ -105,7 +105,7 @@ class AuthItem extends Model
                     $rule->name = $name;
                     Configs::authManager()->add($rule);
                 } else {
-                    $this->addError('ruleName', Yii::t('rbac-admin', 'Invalid rule "{value}"', ['value' => $name]));
+                    $this->addError('ruleName', Yii::t('admin', 'Invalid rule "{value}"', ['value' => $name]));
                 }
             } catch (\Exception $exc) {
                 $this->addError('ruleName', Yii::t('rbac-admin', 'Rule "{value}" does not exists', ['value' => $name]));

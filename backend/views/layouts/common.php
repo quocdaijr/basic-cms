@@ -1,5 +1,4 @@
 <?php $this->beginContent('@backend/views/layouts/base.php'); ?>
-    <?= \common\widgets\Alert::widget() ?>
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
 <!--        <i class="fas fa-5x fa-spinner fa-spin"></i>-->
@@ -9,6 +8,7 @@
     <?= $this->render('sidebar') ?>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <?= \common\widgets\Alert::widget() ?>
         <?= $content ?>
     </div>
     <!-- Control Sidebar -->

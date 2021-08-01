@@ -7,6 +7,7 @@ use yii\caching\Cache;
 use yii\db\Connection;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
+use yii\mail\BaseMailer;
 use yii\rbac\ManagerInterface;
 
 /**
@@ -16,7 +17,7 @@ use yii\rbac\ManagerInterface;
  * ```
  * return [
  *
- *     'mdm.admin.configs' => [
+ *     'admin.configs' => [
  *         'db' => 'customDb',
  *         'menuTable' => '{{%admin_menu}}',
  *         'cache' => [
@@ -39,15 +40,22 @@ use yii\rbac\ManagerInterface;
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 1.0
  */
-
 class Configs extends \admin\BaseObject
 {
+    /**
+     *
+     */
     const CACHE_TAG = 'mdm.admin';
 
     /**
      * @var ManagerInterface .
      */
     public $authManager = 'authManager';
+
+    /**
+     * @var BaseMailer
+     */
+    public $mailer = 'mailer';
 
     /**
      * @var Connection Database connection.
@@ -75,9 +83,14 @@ class Configs extends \admin\BaseObject
     public $menuTable = '{{%menu}}';
 
     /**
-     * @var string Menu table name.
+     * @var string User table name.
      */
     public $userTable = '{{%user}}';
+
+    /**
+     * @var string Profile table name.
+     */
+    public $profileTable = '{{%profile}}';
 
     /**
      * @var integer Default status user signup. 10 mean active.
@@ -129,11 +142,15 @@ class Configs extends \admin\BaseObject
      * @var self Instance of self
      */
     private static $_instance;
+    /**
+     * @var string[]
+     */
     private static $_classes = [
         'db' => 'yii\db\Connection',
         'userDb' => 'yii\db\Connection',
         'cache' => 'yii\caching\Cache',
         'authManager' => 'yii\rbac\ManagerInterface',
+        'mailer' => 'yii\mail\BaseMailer',
     ];
 
     /**
@@ -158,9 +175,9 @@ class Configs extends \admin\BaseObject
     public static function instance()
     {
         if (self::$_instance === null) {
-            $type = ArrayHelper::getValue(Yii::$app->params, 'mdm.admin.configs', []);
+            $type = ArrayHelper::getValue(Yii::$app->params, 'admin.configs', []);
             if (is_array($type) && !isset($type['class'])) {
-                $type['class'] = static::className();
+                $type['class'] = static::class;
             }
 
             return self::$_instance = Yii::createObject($type);
@@ -169,6 +186,11 @@ class Configs extends \admin\BaseObject
         return self::$_instance;
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed|null
+     */
     public static function __callStatic($name, $arguments)
     {
         $instance = static::instance();
@@ -214,6 +236,17 @@ class Configs extends \admin\BaseObject
     {
         return static::instance()->authManager;
     }
+
+    /**
+     * @return BaseMailer
+     */
+    public static function mailer()
+    {
+        $mailer = static::instance()->mailer;
+        $mailer->setViewPath('@admin/mail');
+        return $mailer;
+    }
+
     /**
      * @return integer
      */

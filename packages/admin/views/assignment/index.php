@@ -10,7 +10,7 @@ use yii\widgets\Pjax;
 /* @var $usernameField string */
 /* @var $extraColumns string[] */
 
-$this->title = Yii::t('rbac-admin', 'Assignments');
+$this->title = Yii::t('admin', 'Assignments');
 $this->params['breadcrumbs'][] = $this->title;
 
 $columns = [
@@ -26,17 +26,17 @@ $columns[] = [
 ];
 ?>
 <div class="assignment-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?php Pjax::begin(); ?>
-    <?=
-    GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $columns,
-    ]);
-    ?>
-    <?php Pjax::end(); ?>
-
+    <div class="card">
+        <div class="card-body">
+            <?php Pjax::begin(); ?>
+            <?=
+            GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => $columns,
+            ]);
+            ?>
+            <?php Pjax::end(); ?>
+        </div>
+    </div>
 </div>

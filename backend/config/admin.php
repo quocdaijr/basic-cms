@@ -1,25 +1,26 @@
 <?php
 return [
+    'aliases' => [
+        '@admin' => '@vendor/quocdaijr/admin',
+    ],
+    'components' => [
+        'user' => [
+            'identityClass' => 'admin\models\User',
+            'loginUrl' => '/admin/sign-in/login',
+            'enableAutoLogin' => true,
+            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'itemTable' => '{{%rbac_auth_item}}',
+            'itemChildTable' => '{{%rbac_auth_item_child}}',
+            'assignmentTable' => '{{%rbac_auth_assignment}}',
+            'ruleTable' => '{{%rbac_auth_rule}}',
+        ]
+    ],
     'modules' => [
         'admin' => [
-            'class' => 'admin\Module',
-            'controllerMap' => [
-                'assignment' => [
-                    'class' => 'admin\controllers\AssignmentController',
-                    'userClassName' => 'common\models\User',
-                    'idField' => 'id',
-                    'usernameField' => 'username',
-                ]
-            ],
-            'mainLayout' => '@backend/views/layouts/main.php',
-            'layout' => 'left-menu',
-//            'menus' => [
-//                'assignment' => [
-//                    'label' => 'Cấp Quyền User' // change label
-//                ],
-//                'rule' => null, // disable menu route
-//                'user' => null, // disable menu route
-//            ]
+            'class' => 'admin\Module'
         ]
     ],
     'as access' => [
@@ -29,10 +30,12 @@ return [
             'admin/*'
         ]
     ],
-    'params'         => [
-        'mdm.admin.configs' => [
+    'params' => [
+        'admin.configs' => [
             'menuTable' => '{{%menu}}',
             'strict' => false
         ],
+        'user.passwordResetTokenExpire' => 3600,
+        'user.passwordMinLength' => 8,
     ]
 ];

@@ -5,16 +5,29 @@ namespace admin\models\form;
 use Yii;
 use yii\base\Model;
 use admin\models\User;
+use yii\db\ActiveRecord;
 
 /**
  * Login form
  */
 class Login extends Model
 {
+    /**
+     * @var string
+     */
     public $username;
+    /**
+     * @var string
+     */
     public $password;
+    /**
+     * @var bool
+     */
     public $rememberMe = true;
-    
+
+    /**
+     * @var bool|null|User
+     */
     private $_user = false;
 
     /**
@@ -36,15 +49,13 @@ class Login extends Model
      * Validates the password.
      * This method serves as the inline validation for password.
      *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
+    public function validatePassword()
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError('password', 'Incorrect username or password.');
             }
         }
     }
@@ -64,16 +75,14 @@ class Login extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds user by [[username]] or [[email]]
      *
-     * @return User|null
+     * @return User|array|ActiveRecord|null
      */
     public function getUser()
     {
-        if ($this->_user === false) {
-            $class = Yii::$app->getUser()->identityClass ? : 'admin\models\User';
-            $this->_user = $class::findByUsername($this->username);
-        }
+        if ($this->_user === false)
+            $this->_user = User::findByUsernameOrEmail($this->username);
 
         return $this->_user;
     }

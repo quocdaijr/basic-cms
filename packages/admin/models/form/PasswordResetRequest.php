@@ -1,6 +1,7 @@
 <?php
 namespace admin\models\form;
 
+use admin\components\Configs;
 use admin\components\UserStatus;
 use admin\models\User;
 use Yii;
@@ -18,13 +19,12 @@ class PasswordResetRequest extends Model
      */
     public function rules()
     {
-        $class = Yii::$app->getUser()->identityClass ? : 'admin\models\User';
         return [
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'exist',
-                'targetClass' => $class,
+                'targetClass' => User::class,
                 'filter' => ['status' => UserStatus::ACTIVE],
                 'message' => 'There is no user with such email.'
             ],
@@ -38,9 +38,7 @@ class PasswordResetRequest extends Model
      */
     public function sendEmail()
     {
-        /* @var $user User */
-        $class = Yii::$app->getUser()->identityClass ? : 'admin\models\User';
-        $user = $class::findOne([
+        $user = User::findOne([
             'status' => UserStatus::ACTIVE,
             'email' => $this->email,
         ]);
@@ -51,7 +49,8 @@ class PasswordResetRequest extends Model
             }
 
             if ($user->save()) {
-                return Yii::$app->mailer->compose(['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'], ['user' => $user])
+                $mailer = Configs::mailer();
+                return $mailer->compose(['html' => 'password-reset-token-html', 'text' => 'password-reset-token-text'], ['user' => $user])
                     ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
                     ->setTo($this->email)
                     ->setSubject('Password reset for ' . Yii::$app->name)

@@ -7,21 +7,16 @@ return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
-        '@admin' => '@vendor/quocdaijr/admin',
+        '@keystorage' => '@vendor/quocdaijr/key-storage/src',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'authManager' => [
-            'class' => 'yii\rbac\DbManager',
-            'itemTable' => '{{%rbac_auth_item}}',
-            'itemChildTable' => '{{%rbac_auth_item_child}}',
-            'assignmentTable' => '{{%rbac_auth_assignment}}',
-            'ruleTable' => '{{%rbac_auth_rule}}',
+        'keyStorage' => [
+            'class' => 'keystorage\components\KeyStorageService'
         ],
-
         'i18n' => [
             'translations' => [
                 '*' => [
