@@ -224,4 +224,28 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findWithProfile($id) {
         return self::find()->with('profile')->where(['id' => $id])->one();
     }
+
+    /*------ Audit ------*/
+
+    /**
+     * @param string $id user_id from audit_entry table
+     * @return string
+     */
+    public static function userIdentifierCallbackForAudit($id)
+    {
+        $user = self::findOne($id);
+        return $user ? $user->username : $id;
+    }
+
+    /**
+     * @param string $identifier user_id from audit_entry table
+     * @return array
+     */
+    public static function filterByUserIdentifierCallbackForAudit($identifier)
+    {
+        return static::find()->select('id')
+            ->where(['like', 'username', $identifier])
+            ->orWhere(['like', 'email', $identifier])
+            ->column();
+    }
 }

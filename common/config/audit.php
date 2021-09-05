@@ -40,8 +40,8 @@ return [
             ],
             'accessRoles' => ['administrator'],
             'accessUsers' => null,
-            'userIdentifierCallback' => ['common\models\User', 'userIdentifierCallbackForAudit'],
-            'userFilterCallback' => ['common\models\User', 'filterByUserIdentifierCallbackForAudit'],
+            'userIdentifierCallback' => ['admin\models\User', 'userIdentifierCallbackForAudit'],
+            'userFilterCallback' => ['admin\models\User', 'filterByUserIdentifierCallbackForAudit'],
         ]
     ]
 ];
